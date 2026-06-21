@@ -93,15 +93,13 @@ st.markdown("""
 # Load + Train
 @st.cache_resource
 def load_and_train():
-    url = "https://raw.githubusercontent.com/dsrscientist/dataset1/master/online_retail.csv"
-df = pd.read_csv(url, encoding='utf-8')
+    df = pd.read_csv('online_retail_II.csv', encoding='utf-8')
     df.dropna(subset=['Customer ID'], inplace=True)
     df.drop_duplicates(inplace=True)
     df = df[df['Quantity'] > 0]
     df = df[df['Price'] > 0]
     df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
     df['TotalPrice'] = df['Quantity'] * df['Price']
-
     reference_date = df['InvoiceDate'].max()
     rfm = df.groupby('Customer ID').agg(
         Recency=('InvoiceDate', lambda x: (reference_date - x.max()).days),
